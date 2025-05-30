@@ -1,0 +1,231 @@
+@import url(component.css);
+
+/* Demo Photobooth Tool */
+
+.homePage-photoBoothContainer {
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.homePage-photoBoothDescription {
+  text-align: center;
+  line-height: 1.5;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.homePage-photoBoothDescription h1 {
+  margin-bottom: 40px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.homePage-photoBoothContainer p {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.homePage-photoBoothImg img {
+  display: block;
+  max-width: 50%;
+  height: auto;
+  border-radius: 20px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.homePage-startBtn {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+.homePage-startBtn button {
+  display: block;
+  margin: 0 auto;
+  width: 330px;
+  height: 60px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #d8b4fe, #f9a8d4, #fed7aa);
+  border: none;
+  color: black;
+  padding: 1.2rem 2.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.homePage-startBtn button:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+.homePage-startBtn button i {
+  margin-right: 10px;
+}
+
+/* Guided Steps In Photobooth */
+.homePage-introductionPhotoBoothContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 20px;
+}
+
+.homePage-introductionPhotoBoothContainer h1 {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.homePage-stepsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.homePage-step {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.homePage-step:nth-child(1) {
+  background: linear-gradient(
+    135deg,
+    #fcefee 0%,
+    #f8d7e0 15%,
+    #f4b7c3 30%,
+    #eebbc0 45%,
+    #e4c1f9 65%,
+    #d1b2f8 85%,
+    #c2a1f7 100%
+  );
+}
+
+.homePage-step:nth-child(2) {
+  background: linear-gradient(
+    135deg,
+    #fef9f6 0%,
+    #fff0e8 12%,
+    #ffdaaa 30%,
+    #f9c7be 45%,
+    #ef95a7 65%,
+    #c3a1f7 85%,
+    #a592f7 100%
+  );
+}
+
+.homePage-step:nth-child(3) {
+  background: linear-gradient(
+    135deg,
+    #e0f7f4 0%,
+    #b1e3da 15%,
+    #98d4c9 30%,
+    #84c9c3 45%,
+    #a8c8f7 65%,
+    #b8a9f7 85%,
+    #d1a9f7 100%
+  );
+}
+
+.homePage-step:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #a0e9a3, #6cc086);
+}
+
+.stepTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.stepDescription {
+  margin-bottom: auto;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+.homePage-step img {
+  display: block;
+  max-width: 90%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid black;
+  margin: 0 auto;
+}
+
+/* Overview Section */
+
+.homePage-overview {
+  width: 100%;
+  height: auto;
+  padding: 100px 0 50px 0;
+}
+
+.overview-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.overview-container a {
+  text-decoration: none;
+  color: white;
+}
+
+.overview-title {
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+  font-size: 3rem;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+
+.overview-description {
+  width: 80%;
+  display: block;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+.overview-tryBtn {
+  display: block;
+  margin: 0 auto;
+  background-color: #111110;
+  color: whitesmoke;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 20px;
+  border-radius: 50px;
+  width: 270px;
+  height: 70px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition: all 0.25s ease;
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mã QR</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    #qrcode {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>QR Code của bạn</h1>
+  <div id="qrcode"></div>
+  <div id="imageContainer"></div>
+  <script>
+    const imgData = localStorage.getItem("capturedImage");
+    const container = document.getElementById("imageContainer");
+
+    if (imgData) {
+      const img = new Image();
+      img.src = imgData;
+      img.style.maxWidth = "90%";
+      img.style.border = "2px solid #333";
+      container.appendChild(img);
+    } else {
+      container.innerText = "Không tìm thấy ảnh trong localStorage.";
+    }
+  </script>
+</body>
+</html>

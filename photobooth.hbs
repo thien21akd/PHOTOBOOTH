@@ -1,0 +1,350 @@
+<div class="photoboothContainer">
+    <!-- Các phần tử trang trí -->
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    
+    <div class="photoboothMain">
+        <!-- Phần trên cùng với camera và điều khiển -->
+        <div class="photobooth-topContainer">
+            <div class="top-optionsContainer">
+                <div class="top-option">
+                    <label for="photos">Loại ảnh</label>
+                    <select name="photos" id="photos" class="styled-select">
+                        <option value="" disabled selected>Chọn loại ảnh</option>
+                        <option value="4">4 ảnh</option>
+                        <option value="6">6 ảnh</option>
+                    </select>
+                </div>
+                <div class="top-option">
+                    <label for="time">Thời gian chờ</label>
+                    <select name="time" id="time" class="styled-select">
+                        <option value="" disabled selected>Chọn thời gian</option>
+                        <option value="3">3 giây</option>
+                        <option value="5">5 giây</option>
+                        <option value="10">10 giây</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="top-cameraView">
+                <div class="camera-frame">
+                    <canvas class="cameraCanvas" width="640" height="480"></canvas>
+                    <div class="viewfinder"></div>
+                </div>
+                <div id="countdownDisplay" class="countdown">
+                    <div class="countdown-number"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Thanh bên với khung và sticker -->
+        <div class="photobooth-sideContainer">
+            <div class="side-framesContainer">
+                <h1 class="side-title">💖 Khung ảnh</h1>
+                <div class="frames-grid">
+                    <div class="frame-one active">
+                        <img src="/photobooth_frame.jpg" alt="Khung 1">
+                        <div class="frame-overlay"></div>
+                    </div>
+                    <div class="frame-one">
+                        <img src="/photobooth_frame.jpg" alt="Khung 2">
+                        <div class="frame-overlay"></div>
+                    </div>
+                    <div class="frame-one">
+                        <img src="/photobooth_frame.jpg" alt="Khung 3">
+                        <div class="frame-overlay"></div>
+                    </div>
+                    <div class="frame-one">
+                        <img src="/photobooth_frame.jpg" alt="Khung 4">
+                        <div class="frame-overlay"></div>
+                    </div>
+                    <div class="frame-one">
+                        <img src="/photobooth_frame.jpg" alt="Khung 5">
+                        <div class="frame-overlay"></div>
+                    </div>
+                    <div class="frame-one">
+                        <img src="/photobooth_frame.jpg" alt="Khung 6">
+                        <div class="frame-overlay"></div>
+                    </div>
+                    <div class="frame-one">
+                        <img src="/photobooth_frame.jpg" alt="Khung 7">
+                        <div class="frame-overlay"></div>
+                    </div>
+                    <div class="frame-one">
+                        <img src="/photobooth_frame.jpg" alt="Khung 8">
+                        <div class="frame-overlay"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-stickersContainer">
+                <h1 class="side-title">✨ Sticker</h1>
+                <div class="stickers-grid">
+                    <div class="sticker-one">
+                        <img src="/sticker1.png" alt="Sticker 1">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker2.png" alt="Sticker 2">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker3.png" alt="Sticker 3">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker4.png" alt="Sticker 4">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker5.png" alt="Sticker 5">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker6-removebg-preview.png" alt="Sticker 6">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker7-removebg-preview.png" alt="Sticker 7">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker8-removebg-preview.png" alt="Sticker 8">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker9-removebg-preview.png" alt="Sticker 9">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker10-removebg-preview.png" alt="Sticker 10">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker11-removebg-preview.png" alt="Sticker 11">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker12-removebg-preview.png" alt="Sticker 12">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker13-removebg-preview.png" alt="Sticker 13">
+                    </div>
+                    <div class="sticker-one">
+                        <img src="/sticker14-removebg-preview.png" alt="Sticker 14">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Phần dưới cùng với trang phục -->
+    <div class="photobooth-bottomContainer">
+        <div class="bottom-btnContainer">
+            <button class="bottom-captureBtn pulse-animation">
+                <span><i class="fa-solid fa-camera"></i></span> Bắt đầu chụp
+            </button>
+        </div>
+        
+        <div class="side-clothingContainer">
+            <h1 class="side-title">
+                <i class="fa-solid fa-shirt"></i> Trang phục / Phụ kiện
+            </h1>
+            
+            <div class="clothing-categories">
+                <div class="clothing-category active" data-category="all">Tất cả</div>
+                <div class="clothing-category" data-category="ao">Áo</div>
+                <div class="clothing-category" data-category="quan">Quần</div>
+                <div class="clothing-category" data-category="giay">Giày</div>
+                <div class="clothing-category" data-category="phukien">Phụ kiện</div>
+            </div>
+            
+            <div class="clothing-items">
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img3.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img5.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img6.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img8.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img10.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img12.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img13.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img14.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/img15.png" alt="Áo">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="quan">
+                    <span class="category-badge">Quần</span>
+                    <img src="/img1.png" alt="Quần">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="quan">
+                    <span class="category-badge">Quần</span>
+                    <img src="/img9.png" alt="Quần">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="quan">
+                    <span class="category-badge">Quần</span>
+                    <img src="/img2.png" alt="Quần">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="quan">
+                    <span class="category-badge">Quần</span>
+                    <img src="/img11.png" alt="Quần">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="quan">
+                    <span class="category-badge">Quần</span>
+                    <img src="/img4.png" alt="Quần">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="quan">
+                    <span class="category-badge">Quần</span>
+                    <img src="/img7.png" alt="Quần">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="giay">
+                    <span class="category-badge">Giày</span>
+                    <img src="/clothing3.png" alt="Giày">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="phukien">
+                    <span class="category-badge">Phụ kiện</span>
+                    <img src="/img73.png" alt="Mũ lưỡi trai">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="phukien">
+                    <span class="category-badge">Phụ kiện</span>
+                    <img src="/img74.png" alt="Mũ lưỡi trai">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="phukien">
+                    <span class="category-badge">Phụ kiện</span>
+                    <img src="/img75.png" alt="Mũ lưỡi trai">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+                <div class="clothing-one" data-category="ao">
+                    <span class="category-badge">Áo</span>
+                    <img src="/clothing5.png" alt="Áo thun đen">
+                    <div class="item-overlay">
+                        <button class="item-preview-btn">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="qrCodeContainer" class="qr-code">
+            <p>Quét mã để tải ảnh</p>
+            <!-- Mã QR sẽ được tạo ở đây -->
+        </div>
+    </div>
+    
+    <!-- Hiệu ứng loading -->
+    <div class="loading-indicator">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Đang tải...</div>
+        <div class="loading-progress">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+</div>

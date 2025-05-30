@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Virtual Photobooth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.0.6/tsparticles.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-light: #3b82f6;
+            --primary-dark: #6366f1;
+            --secondary-light: #f59e0b;
+            --secondary-dark: #fbbf24;
+            --dark-bg: #0f172a;
+            --light-bg: #f1f5f9;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>'), auto;
+        }
+        
+        body.light {
+            background: linear-gradient(135deg, var(--light-bg), #e2e8f0);
+            color: #1e293b;
+        }
+        
+        body.dark {
+            background: linear-gradient(135deg, var(--dark-bg), #1e293b);
+            color: #f8fafc;
+        }
+        
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Neumorphism Buttons */
+        .neu-btn {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .light .neu-btn {
+            box-shadow:  8px 8px 16px #d1d9e6, 
+                        -8px -8px 16px #ffffff;
+        }
+        
+        .dark .neu-btn {
+            box-shadow:  8px 8px 16px #0f172a, 
+                       -8px -8px 16px #1e293b;
+        }
+        
+        .neu-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .neu-btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary-light), var(--primary-dark));
+            border-radius: 10px;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--secondary-dark), var(--secondary-light));
+        }
+        
+        /* Photo Card 3D Effect */
+        .photo-card {
+            transform: perspective(1000px) rotateY(5deg) rotateX(2deg);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .photo-card:hover {
+            transform: perspective(1000px) rotateY(0) rotateX(0);
+        }
+        
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            to { background-position: -200% 0; }
+        }
+        
+        /* Particle Background */
+        #tsparticles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        
+        /* Animated Gradients */
+        .animated-gradient {
+            background: linear-gradient(-45deg, #3b82f6, #6366f1, #f59e0b, #fbbf24);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Pulse Effect */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Custom Cursor */
+        button, a, .clickable {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%233b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>'), pointer;
+        }
+    </style>
+</head>
+<body class="min-h-screen light">
+    <!-- Particle Background -->
+    <div id="tsparticles"></div>
+    
+    <!-- Floating Elements -->
+    <div class="fixed top-20 left-10 w-16 h-16 rounded-full bg-blue-400/20 blur-xl floating"></div>
+    <div class="fixed bottom-32 right-20 w-24 h-24 rounded-full bg-amber-400/20 blur-xl floating" style="animation-delay: 2s;"></div>
+    <div class="fixed top-1/3 right-1/4 w-20 h-20 rounded-full bg-purple-400/20 blur-xl floating" style="animation-delay: 4s;"></div>
+    
+    <!-- Navbar -->
+    <nav class="glass-panel fixed top-0 left-0 w-full flex justify-between items-center px-6 py-4 z-50">
+        <div class="text-3xl font-extrabold italic bg-clip-text text-transparent animated-gradient">
+            Elite Photobooth Pro
+        </div>
+        <div class="flex gap-6 items-center">
+            <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition-colors clickable">Home</a>
+            <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition-colors clickable">Gallery</a>
+            <a href="#" class="text-lg font-semibold hover:text-yellow-300 transition-colors clickable">Pricing</a>
+            <button id="toggle-theme" class="p-2 rounded-full hover:bg-yellow-300/20 transition-colors clickable">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="min-h-screen flex flex-col items-center justify-center pt-24 pb-10 px-4">
+        <header class="text-center mb-12 max-w-4xl">
+            <h1 class="text-5xl md:text-7xl font-extrabold bg-clip-text text-transparent animated-gradient italic tracking-tight mb-6">
+                Elite Virtual Photobooth Experience
+            </h1>
+            <p class="mt-3 text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto font-medium glass-panel p-4 rounded-2xl">
+                Capture your moments with studio-quality filters, AI enhancements, and premium frames
+            </p>
+        </header>
+
+        <div class="glass-panel rounded-3xl p-8 w-full max-w-6xl mx-4">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Canvas Area -->
+                <div class="flex-1">
+                    <div class="photo-card relative overflow-hidden rounded-2xl shadow-2xl">
+                        <div id="video-container" class="relative">
+                            <video id="video" width="640" height="480" autoplay class="w-full hidden rounded-2xl"></video>
+                            <canvas id="canvas" width="640" height="480" class="w-full rounded-2xl hidden"></canvas>
+                            <div id="skeleton-loading" class="skeleton w-full h-96 rounded-2xl"></div>
+                            <img id="frame-overlay" class="absolute top-0 left-0 w-full h-full object-cover hidden" src="" alt="Frame Overlay">
+                        </div>
+                        
+                        <div class="mt-6 flex flex-wrap justify-center gap-4">
+                            <button id="snap" class="neu-btn bg-gradient-to-r from-yellow-400 to-amber-500 text-gray-900 px-8 py-4 rounded-xl font-bold hover:from-yellow-500 hover:to-amber-600 transition-all clickable pulse">
+                                📸 Capture Moment
+                            </button>
+                            <button id="download" class="neu-btn bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 rounded-xl font-bold hover:from-emerald-600 hover:to-teal-600 transition-all clickable" disabled>
+                                ⬇️ Download Photo
+                            </button>
+                            <button id="share" class="neu-btn bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-8 py-4 rounded-xl font-bold hover:from-blue-600 hover:to-indigo-600 transition-all clickable" disabled>
+                                ↗️ Share Online
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls: Filters and Frames -->
+                <div class="flex-1 space-y-8">
+                    <!-- AI Enhance Section -->
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                            AI Enhancements
+                        </h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyAI('beautify')">
+                                ✨ Auto Beautify
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyAI('background')">
+                                🌆 Change Background
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyAI('cartoon')">
+                                🎨 Cartoon Effect
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyAI('vintage')">
+                                🕰️ Vintage Look
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Premium Filters
+                        </h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFilter('none')">
+                                Original
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFilter('cinematic')">
+                                Cinematic
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFilter('dramatic')">
+                                Dramatic
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFilter('golden')">
+                                Golden Hour
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFilter('moody')">
+                                Moody
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFilter('pastel')">
+                                Pastel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Frames -->
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Designer Frames
+                        </h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFrame('none')">
+                                No Frame
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFrame('polaroid')">
+                                Polaroid
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFrame('vintage')">
+                                Vintage
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFrame('modern')">
+                                Modern
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFrame('luxury')">
+                                Luxury
+                            </button>
+                            <button class="neu-btn p-4 rounded-xl font-medium clickable" onclick="applyFrame('festive')">
+                                Festive
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section class="py-16 px-4 max-w-7xl mx-auto">
+        <h2 class="text-4xl font-bold text-center mb-12 bg-clip-text text-transparent animated-gradient">Why Choose Elite Photobooth?</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass-panel p-6 rounded-2xl hover:transform hover:-translate-y-2 transition-all duration-300">
+                <div class="text-5xl mb-4">🌠</div>
+                <h3 class="text-xl font-bold mb-2">AI-Powered Enhancements</h3>
+                <p class="text-gray-700 dark:text-gray-300">Our advanced AI automatically enhances your photos with perfect lighting and skin smoothing.</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl hover:transform hover:-translate-y-2 transition-all duration-300">
+                <div class="text-5xl mb-4">🎭</div>
+                <h3 class="text-xl font-bold mb-2">100+ Premium Filters</h3>
+                <p class="text-gray-700 dark:text-gray-300">Professional-grade filters curated by photography experts for every mood and occasion.</p>
+            </div>
+            <div class="glass-panel p-6 rounded-2xl hover:transform hover:-translate-y-2 transition-all duration-300">
+                <div class="text-5xl mb-4">🖼️</div>
+                <h3 class="text-xl font-bold mb-2">Designer Frames</h3>
+                <p class="text-gray-700 dark:text-gray-300">Exclusive frames designed by artists to make your photos stand out on social media.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="glass-panel mt-12 py-8 text-center">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-2xl font-extrabold italic bg-clip-text text-transparent animated-gradient mb-4 md:mb-0">
+                    Elite Photobooth Pro
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-yellow-300 transition-colors clickable">Terms</a>
+                    <a href="#" class="hover:text-yellow-300 transition-colors clickable">Privacy</a>
+                    <a href="#" class="hover:text-yellow-300 transition-colors clickable">Contact</a>
+                    <a href="#" class="hover:text-yellow-300 transition-colors clickable">Careers</a>
+                </div>
+            </div>
+            <p class="mt-6 text-gray-700 dark:text-gray-300">© 2025 Elite Virtual Photobooth. All rights reserved. Powered by xAI Technologies.</p>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const snapBtn = document.getElementById('snap');
+        const downloadBtn = document.getElementById('download');
+        const shareBtn = document.getElementById('share');
+        const frameOverlay = document.getElementById('frame-overlay');
+        const toggleThemeBtn = document.getElementById('toggle-theme');
+        const videoContainer = document.getElementById('video-container');
+        const skeletonLoading = document.getElementById('skeleton-loading');
+        
+        // Frames (placeholder URLs - replace with actual frame images)
+        const frames = {
+            none: '',
+            polaroid: 'https://via.placeholder.com/640x480/FFFFFF/000000?text=Polaroid+Frame',
+            vintage: 'https://via.placeholder.com/640x480/F5F5DC/000000?text=Vintage+Frame',
+            modern: 'https://via.placeholder.com/640x480/000000/FFFFFF?text=Modern+Frame',
+            luxury: 'https://via.placeholder.com/640x480/FFD700/000000?text=Luxury+Frame',
+            festive: 'https://via.placeholder.com/640x480/FF0000/FFFFFF?text=Festive+Frame'
+        };
+        
+        // State
+        let currentFilter = 'none';
+        let currentFrame = 'none';
+        let isWebcamReady = false;
+        let capturedPhoto = null;
+        
+        // Initialize webcam
+        async function initWebcam() {
+            snapBtn.innerHTML = '⌛ Initializing Camera...';
+            snapBtn.disabled = true;
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user' 
+                    } 
+                });
+                
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    video.play();
+                    video.classList.remove('hidden');
+                    skeletonLoading.classList.add('hidden');
+                    isWebcamReady = true;
+                    snapBtn.innerHTML = '📸 Capture Moment';
+                    snapBtn.disabled = false;
+                    
+                    // Start rendering video to canvas for filters
+                    requestAnimationFrame(renderVideo);
+                };
+            } catch (err) {
+                console.error('Error accessing webcam:', err);
+                // Fallback to sample image
+                const img = new Image();
+                img.src = 'https://via.placeholder.com/640x480.png?text=Click+Capture+to+Try';
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    video.classList.add('hidden');
+                    canvas.classList.remove('hidden');
+                    skeletonLoading.classList.add('hidden');
+                    snapBtn.innerHTML = '📸 Capture Moment';
+                    snapBtn.disabled = false;
+                };
+            }
+        }
+        
+        // Render video with current filter
+        function renderVideo() {
+            if (!isWebcamReady) return;
+            
+            ctx.filter = getFilterValue(currentFilter);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            requestAnimationFrame(renderVideo);
+        }
+        
+        // Get CSS filter value
+        function getFilterValue(filter) {
+            switch(filter) {
+                case 'cinematic': return 'contrast(110%) brightness(90%) saturate(110%)';
+                case 'dramatic': return 'contrast(130%) brightness(80%) saturate(120%)';
+                case 'golden': return 'sepia(30%) brightness(110%) contrast(110%) saturate(120%)';
+                case 'moody': return 'brightness(85%) contrast(120%) saturate(90%)';
+                case 'pastel': return 'brightness(110%) contrast(90%) saturate(80%)';
+                default: return 'none';
+            }
+        }
+        
+        // Apply filter
+        function applyFilter(filter) {
+            currentFilter = filter;
+            animateFlash();
+            
+            if (!isWebcamReady && capturedPhoto) {
+                ctx.filter = getFilterValue(filter);
+                ctx.drawImage(capturedPhoto, 0, 0, canvas.width, canvas.height);
+                applyFrame(currentFrame);
+            }
+        }
+        
+        // Apply AI effect (simulated)
+        function applyAI(effect) {
+            animateFlash();
+            
+            // In a real app, this would call an AI API
+            const effects = {
+                beautify: { filter: 'brightness(105%) contrast(95%) saturate(110%)', message: 'Skin smoothing applied' },
+                background: { filter: 'sepia(30%) contrast(110%)', message: 'Background changed' },
+                cartoon: { filter: 'contrast(150%) saturate(200%)', message: 'Cartoon effect applied' },
+                vintage: { filter: 'sepia(50%) contrast(120%) brightness(95%)', message: 'Vintage look applied' }
+            };
+            
+            ctx.filter = effects[effect].filter;
+            
+            if (isWebcamReady) {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            } else if (capturedPhoto) {
+                ctx.drawImage(capturedPhoto, 0, 0, canvas.width, canvas.height);
+            }
+            
+            applyFrame(currentFrame);
+            showNotification(effects[effect].message);
+        }
+        
+        // Apply frame
+        function applyFrame(frame) {
+            currentFrame = frame;
+            frameOverlay.src = frames[frame];
+            frameOverlay.classList.toggle('hidden', frame === 'none');
+            
+            if (frame !== 'none') {
+                frameOverlay.onload = () => {
+                    animateFlash();
+                };
+            }
+        }
+        
+        // Snap photo
+        snapBtn.addEventListener('click', () => {
+            if (!isWebcamReady && !capturedPhoto) {
+                // First capture with fallback image
+                canvas.classList.remove('hidden');
+                video.classList.add('hidden');
+                capturedPhoto = new Image();
+                capturedPhoto.src = canvas.toDataURL('image/png');
+                downloadBtn.disabled = false;
+                shareBtn.disabled = false;
+                return;
+            }
+            
+            // Camera flash animation
+            animateFlash();
+            
+            // Capture current frame
+            ctx.filter = getFilterValue(currentFilter);
+            ctx.drawImage(isWebcamReady ? video : capturedPhoto, 0, 0, canvas.width, canvas.height);
+            
+            // Save the captured photo
+            capturedPhoto = new Image();
+            capturedPhoto.src = canvas.toDataURL('image/png');
+            
+            // Show canvas and hide video
+            video.classList.add('hidden');
+            canvas.classList.remove('hidden');
+            
+            // Enable download and share
+            downloadBtn.disabled = false;
+            shareBtn.disabled = false;
+            
+            // Apply current frame if any
+            applyFrame(currentFrame);
+            
+            showNotification('Photo captured!');
+        });
+        
+        // Download image
+        downloadBtn.addEventListener('click', () => {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Draw image with filter
+            tempCtx.filter = ctx.filter;
+            tempCtx.drawImage(isWebcamReady ? video : capturedPhoto, 0, 0, canvas.width, canvas.height);
+            
+            // Draw frame if exists
+            if (!frameOverlay.classList.contains('hidden')) {
+                const frameImg = new Image();
+                frameImg.crossOrigin = 'Anonymous';
+                frameImg.src = frameOverlay.src;
+                frameImg.onload = () => {
+                    tempCtx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+                    downloadImage(tempCanvas);
+                };
+            } else {
+                downloadImage(tempCanvas);
+            }
+        });
+        
+        // Helper to download image
+        function downloadImage(tempCanvas) {
+            const link = document.createElement('a');
+            link.download = 'elite-photobooth-' + new Date().toISOString().slice(0, 10) + '.png';
+            link.href = tempCanvas.toDataURL('image/png');
+            link.click();
+            showNotification('Download started!');
+        }
+        shareBtn.addEventListener('click', async () => {
+            try {
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], 'photobooth.png', { type: 'image/png' });
+                    
+                    if (navigator.share && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            title: 'My Photobooth Creation',
+                            text: 'Check out this photo I created with Elite Photobooth!',
+                            files: [file]
+                        });
+                    } else if (navigator.clipboard) {
+                        await navigator.clipboard.write([
+                            new ClipboardItem({
+                                'image/png': blob
+                            })
+                        ]);
+                        showNotification('Image copied to clipboard!');
+                    } else {
+                        const shareUrl = URL.createObjectURL(blob);
+                        window.open(`https://twitter.com/intent/tweet?text=Check%20out%20my%20photo%20from%20Elite%20Photobooth!&url=${encodeURIComponent(shareUrl)}`, '_blank');
+                    }
+                }, 'image/png');
+            } catch (err) {
+                console.error('Error sharing:', err);
+                showNotification('Sharing failed. Try downloading instead.');
+            }
+        });
+        toggleThemeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light');
+            document.body.classList.toggle('dark');
+            toggleThemeBtn.innerHTML = document.body.classList.contains('dark') ?
+                `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>` :
+                `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>`;
+        });
+        function animateFlash() {
+            const flash = document.createElement('div');
+            flash.className = 'absolute inset-0 bg-white opacity-0 animate-flash pointer-events-none';
+            flash.style.animation = 'flash 0.5s ease-out';
+            videoContainer.appendChild(flash);
+            
+            flash.addEventListener('animationend', () => {
+                flash.remove();
+            });
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes flash {
+                    0% { opacity: 0; }
+                    20% { opacity: 0.8; }
+                    100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-full text-sm font-medium shadow-lg animate-fade-in-up';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('animate-fade-out');
+                notification.addEventListener('animationend', () => {
+                    notification.remove();
+                });
+            }, 3000);
+            if (!document.getElementById('notification-animations')) {
+                const style = document.createElement('style');
+                style.id = 'notification-animations';
+                style.innerHTML = `
+                    @keyframes fade-in-up {
+                        0% { opacity: 0; transform: translate(-50%, 20px); }
+                        100% { opacity: 1; transform: translate(-50%, 0); }
+                    }
+                    @keyframes fade-out {
+                        0% { opacity: 1; transform: translate(-50%, 0); }
+                        100% { opacity: 0; transform: translate(-50%, -20px); }
+                    }
+                    .animate-fade-in-up { animation: fade-in-up 0.3s ease-out forwards; }
+                    .animate-fade-out { animation: fade-out 0.3s ease-out forwards; }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        function initParticles() {
+            tsParticles.load("tsparticles", {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#ffffff" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "grab" },
+                        onclick: { enable: true, mode: "push" }
+                    },
+                    modes: {
+                        grab: { distance: 140, line_linked: { opacity: 1 } },
+                        push: { particles_nb: 4 }
+                    }
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            initWebcam();
+            initParticles();
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .animate-flash {
+                    animation: flash 0.5s ease-out;
+                }
+                @keyframes flash {
+                    0% { opacity: 0; }
+                    50% { opacity: 0.8; }
+                    100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
